@@ -1,64 +1,41 @@
 #include <Arduino.h>
 #include <CAN.h>
 
-// 関数プロトタイプ宣言
-int receive(char *buf);
-
 void setup()
 {
-  Serial.begin(115200); // シリアル通信開始
+  Serial.begin(115200);
   while (!Serial)
     ;
-
-  Serial.println("CAN Sender");
-
   CAN.setPins(26, 27);
+
+  // CAN バスの初期化（500 kbps）
   if (!CAN.begin(500E3))
   {
-    Serial.println("Starting CAN failed!");
+    Serial.println("CAN の初期化に失敗しました！");
     while (1)
       ;
   }
+  Serial.println("CAN バス初期化完了");
 }
-
-int nCount = 0;
 
 void loop()
 {
-  Serial.print("start:");
-  Serial.println(nCount);
-
-  char buf[256];
-  Serial.println(buf);
-  sprintf(buf, "w:%d", nCount);
-  CAN.beginPacket(0x12);
-  CAN.write((uint8_t *)buf, strlen(buf));
-  CAN.endPacket();
-  nCount++;
-
-  // 受信処理
-  memset(buf, '\0', sizeof(buf)); // バッファをクリア（ヌル文字で）
-  int size = receive(buf);
-  if (size > 0)
-  {
-    Serial.println(buf);
-  }
-
-  delay(10);
-}
-
-// receive関数の定義
-int receive(char *buf)
-{
+  // 受信パケットの存在確認
   int packetSize = CAN.parsePacket();
-  if (packetSize > 0)
+  if (packetSize)
   {
-    int size = 0;
+    // 受信した CAN ID を表示
+    Serial.print("受信パケット ID: 0x");
+    Serial.println(CAN.packetId(), HEX);
+
+    // 受信データを順次表示
+    Serial.print("Data: ");
     while (CAN.available())
     {
-      buf[size++] = CAN.read();
+      int byteReceived = CAN.read();
+      Serial.print(byteReceived);
+      Serial.print(" ");
     }
-    return size;
+    Serial.println();
   }
-  return 0;
 }
