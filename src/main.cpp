@@ -27,15 +27,24 @@ void loop()
     Serial.println(CAN.packetId(), HEX);
 
     // 受信データを表示
-    Serial.print("Data: ");
+    // Serial.print("Data: ");
     while (CAN.available())
     {
-      int8_t byteReceived = CAN.read();
-      int8_t l_x = (int8_t)byteReceived;
-      int16_t date = map(l_x, -127, 127, -255, 255);
-      Serial.print(date);
-      Serial.print(" ");
+      int8_t l_x = CAN.read();
+      int8_t l_y = CAN.read();
+      int8_t r_x = CAN.read();
+      int8_t r_y = CAN.read();
+      int16_t l_x = map(l_x, -127, 127, -255, 255);
+      int16_t l_y = map(l_y, -127, 127, -255, 255);
+      int16_t r_x = map(r_x, -127, 127, -255, 255);
+      int16_t r_y = map(r_y, -127, 127, -255, 255);
+      Serial.print("l_x");
+      Serial.println(l_x);
+      Serial.print("l_y");
+      Serial.println(l_y);
+      Serial.print("r_x");
+      Serial.println(r_x);
+      Serial.print("r_y");
+      Serial.println(r_y);
     }
-    Serial.println();
   }
-}
