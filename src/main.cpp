@@ -20,20 +20,20 @@ void setup()
 
 void loop()
 {
-  // 受信パケットの存在確認
-  int packetSize = CAN.parsePacket();
-  if (packetSize)
+  if (CAN.parsePacket())
   {
     // 受信した CAN ID を表示
     Serial.print("受信パケット ID: 0x");
     Serial.println(CAN.packetId(), HEX);
 
-    // 受信データを順次表示
+    // 受信データを表示
     Serial.print("Data: ");
     while (CAN.available())
     {
-      int byteReceived = CAN.read();
-      Serial.print(byteReceived);
+      int8_t byteReceived = CAN.read();
+      int8_t l_x = (int8_t)byteReceived;
+      int16_t date = map(l_x, -127, 127, -255, 255);
+      Serial.print(date);
       Serial.print(" ");
     }
     Serial.println();
