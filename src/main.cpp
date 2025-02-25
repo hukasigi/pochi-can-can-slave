@@ -30,14 +30,10 @@ void loop()
     // Serial.print("Data: ");
     while (CAN.available())
     {
-      int8_t byteReceived_lx = CAN.read();
-      int8_t byteReceived_ly = CAN.read();
-      int8_t byteReceived_rx = CAN.read();
-      int8_t byteReceived_ry = CAN.read();
-      int8_t l_x = (int8_t)byteReceived_lx;
-      int8_t l_y = (int8_t)byteReceived_ly;
-      int8_t r_x = (int8_t)byteReceived_rx;
-      int8_t r_y = (int8_t)byteReceived_ry;
+      int8_t l_x = CAN.read();
+      int8_t l_y = CAN.read();
+      int8_t r_x = CAN.read();
+      int8_t r_y = CAN.read();
       int16_t date_lx = map(l_x, -127, 127, -255, 255);
       int16_t date_ly = map(l_y, -127, 127, -255, 255);
       int16_t date_rx = map(r_x, -127, 127, -255, 255);
