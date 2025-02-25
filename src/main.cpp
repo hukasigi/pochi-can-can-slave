@@ -30,22 +30,26 @@ void loop()
     // Serial.print("Data: ");
     while (CAN.available())
     {
-      int16_t l_x = CAN.read();
-      int16_t l_y = CAN.read();
-      int16_t r_x = CAN.read();
-      int16_t r_y = CAN.read();
-      l_x = map(l_x, -127, 127, -255, 255);
-      l_y = map(l_y, -127, 127, -255, 255);
-      r_x = map(r_x, -127, 127, -255, 255);
-      r_y = map(r_y, -127, 127, -255, 255);
+      int8_t byteReceived_lx = CAN.read();
+      int8_t byteReceived_ly = CAN.read();
+      int8_t byteReceived_rx = CAN.read();
+      int8_t byteReceived_ry = CAN.read();
+      int8_t l_x = (int8_t)byteReceived_lx;
+      int8_t l_y = (int8_t)byteReceived_ly;
+      int8_t r_x = (int8_t)byteReceived_rx;
+      int8_t r_y = (int8_t)byteReceived_ry;
+      int16_t date_lx = map(l_x, -127, 127, -255, 255);
+      int16_t date_ly = map(l_y, -127, 127, -255, 255);
+      int16_t date_rx = map(r_x, -127, 127, -255, 255);
+      int16_t date_ry = map(r_y, -127, 127, -255, 255);
       Serial.print("l_x");
-      Serial.println(l_x);
+      Serial.println(date_lx);
       Serial.print("l_y");
-      Serial.println(l_y);
+      Serial.println(date_ly);
       Serial.print("r_x");
-      Serial.println(r_x);
+      Serial.println(date_rx);
       Serial.print("r_y");
-      Serial.println(r_y);
+      Serial.println(date_ry);
     }
   }
 }
