@@ -30,14 +30,14 @@ void loop()
     // Serial.print("Data: ");
     while (CAN.available())
     {
-      int8_t l_x = CAN.read();
-      int8_t l_y = CAN.read();
-      int8_t r_x = CAN.read();
-      int8_t r_y = CAN.read();
-      int16_t l_x = map(l_x, -127, 127, -255, 255);
-      int16_t l_y = map(l_y, -127, 127, -255, 255);
-      int16_t r_x = map(r_x, -127, 127, -255, 255);
-      int16_t r_y = map(r_y, -127, 127, -255, 255);
+      int16_t l_x = CAN.read();
+      int16_t l_y = CAN.read();
+      int16_t r_x = CAN.read();
+      int16_t r_y = CAN.read();
+      l_x = map(l_x, -127, 127, -255, 255);
+      l_y = map(l_y, -127, 127, -255, 255);
+      r_x = map(r_x, -127, 127, -255, 255);
+      r_y = map(r_y, -127, 127, -255, 255);
       Serial.print("l_x");
       Serial.println(l_x);
       Serial.print("l_y");
@@ -48,3 +48,4 @@ void loop()
       Serial.println(r_y);
     }
   }
+}
