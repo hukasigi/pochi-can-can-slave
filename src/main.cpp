@@ -1,51 +1,73 @@
 #include <Arduino.h>
 #include <CAN.h>
 
+const int8_t DEVICE_ID = 0x01; // スレーブのID
+void onreceive(int packetSize)
+{
+  if (CAN.parsePacket())
+  {
+    if (packetSize == 0)
+      return; // 受信データがない場合は何もしない
+    uint8_t command;
+    int8_t receive_date1, receive_date2, receive_date3, receive_date4;
+
+    uint8_t senderID = CAN.packetId(); // 送信元のID
+    command = CAN.read();
+    receive_date1 = CAN.read();
+    receive_date2 = CAN.read();
+    receive_date3 = CAN.read();
+    receive_date4 = CAN.read();
+
+    // 自分宛のデータなら処理
+    if (senderID == DEVICE_ID)
+    {
+      Serial.print("Received from Master, Command: ");
+      Serial.println(command, HEX);
+
+      if (command == 0x01)
+      {
+        // モーター制御
+        Serial.print("Motor Control -> l_x: ");
+        Serial.print(receive_date1);
+        Serial.print(" l_y: ");
+        Serial.println(receive_date2);
+        Serial.print(" r_x: ");
+        Serial.println(receive_date3);
+        Serial.print(" r_y: ");
+        Serial.println(receive_date4);
+      }
+      else if (command == 0x02)
+      {
+        // ボタン制御
+        Serial.print("button Control -> circle: ");
+        Serial.print(receive_date1);
+        Serial.print(" triangle: ");
+        Serial.println(receive_date2);
+        Serial.print(" square: ");
+        Serial.println(receive_date3);
+        Serial.print(" cross: ");
+        Serial.println(receive_date4);
+      }
+    }
+  }
+};
 void setup()
 {
   Serial.begin(115200);
   while (!Serial)
     ;
-  CAN.setPins(26, 27);
 
-  // CAN バスの初期化（500 kbps）
+  CAN.setPins(26, 27);
   if (!CAN.begin(500E3))
   {
-    Serial.println("CAN の初期化に失敗しました！");
+    Serial.println("Failed!");
     while (1)
       ;
   }
-  Serial.println("CAN バス初期化完了");
+  Serial.println("Success!");
+  CAN.onReceive(onreceive);
 }
 
 void loop()
 {
-  if (CAN.parsePacket())
-  {
-    // 受信した CAN ID を表示
-    Serial.print("受信パケット ID: 0x");
-    Serial.println(CAN.packetId(), HEX);
-
-    // 受信データを表示
-    // Serial.print("Data: ");
-    while (CAN.available())
-    {
-      int8_t l_x = CAN.read();
-      int8_t l_y = CAN.read();
-      int8_t r_x = CAN.read();
-      int8_t r_y = CAN.read();
-      int16_t date_lx = map(l_x, -127, 127, -255, 255);
-      int16_t date_ly = map(l_y, -127, 127, -255, 255);
-      int16_t date_rx = map(r_x, -127, 127, -255, 255);
-      int16_t date_ry = map(r_y, -127, 127, -255, 255);
-      Serial.print("l_x");
-      Serial.println(date_lx);
-      Serial.print("l_y");
-      Serial.println(date_ly);
-      Serial.print("r_x");
-      Serial.println(date_rx);
-      Serial.print("r_y");
-      Serial.println(date_ry);
-    }
-  }
 }
