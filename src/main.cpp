@@ -1,11 +1,12 @@
 #include <Arduino.h>
 #include <CAN.h>
 
-const int8_t DEVICE_ID = 0x01; // スレーブのID
+const int8_t DEVICE_ID = 0x10; // スレーブのID
 void onReceive(int packetSize)
 {
   if (packetSize == 0)
     return;
+  Serial.println(packetSize);
 
   uint8_t targetID = CAN.read(); // 宛先スレーブID
   uint8_t command = CAN.read();
@@ -59,6 +60,8 @@ void setup()
       ;
   }
   Serial.println("Success!");
+
+  CAN.filter(DEVICE_ID, 0xFF);
   CAN.onReceive(onReceive);
 }
 
