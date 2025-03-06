@@ -24,8 +24,9 @@ void onReceive(int packetSize)
 
   if (command == 0x01)
   {
-    Serial.print("Motor Control -> l_x: ");
-    Serial.print(receive_data1);
+    Serial.println("Motor Control");
+    Serial.print(" l_x: ");
+    Serial.println(receive_data1);
     Serial.print(" l_y: ");
     Serial.println(receive_data2);
     Serial.print(" r_x: ");
@@ -35,8 +36,9 @@ void onReceive(int packetSize)
   }
   else if (command == 0x02)
   {
-    Serial.print("Button Control -> circle: ");
-    Serial.print(receive_data1);
+    Serial.println("Button Control");
+    Serial.print(" circle: ");
+    Serial.println(receive_data1);
     Serial.print(" triangle: ");
     Serial.println(receive_data2);
     Serial.print(" square: ");
@@ -61,7 +63,6 @@ void setup()
   }
   Serial.println("Success!");
 
-  CAN.filter(DEVICE_ID, 0xFF);
   CAN.onReceive(onReceive);
 }
 
